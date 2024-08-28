@@ -1,7 +1,7 @@
 package com.programming.techie.youtubeclone.service;
 
 
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
@@ -16,30 +16,26 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-
 public class S3Service implements FileService {
 
-    public static final String BUCKET_NAME = "youtube-demo-ptechie";
-    private final AmazonS3Client awsS3Client ;
-
-
+    public static final String BUCKET_NAME = "yahia-spain-youtube";
+    private final AmazonS3 amazonS3;
 
     @Override
-    public String uploadFile(MultipartFile file){
-        //upload to AWS
-        //prepare a key
+    public String uploadFile(MultipartFile file) {
         var filenameExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-        var key = UUID.randomUUID().toString() + filenameExtension;
+        var key = UUID.randomUUID().toString() + "." + filenameExtension;
 
         var metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
         metadata.setContentType(file.getContentType());
         try {
-            awsS3Client.putObject(BUCKET_NAME, key, file.getInputStream(), metadata);
+            amazonS3.putObject(BUCKET_NAME, key, file.getInputStream(), metadata);
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "an exception li ktbtha f S3 service java srat, while uploading file");
         }
-        awsS3Client.setObjectAcl(BUCKET_NAME, key, CannedAccessControlList.PublicRead);
-        return awsS3Client.getResourceUrl(BUCKET_NAME, key);
+
+        amazonS3.setObjectAcl(BUCKET_NAME, key, CannedAccessControlList.PublicRead);
+        return amazonS3.getUrl(BUCKET_NAME, key).toString();
     }
 }
