@@ -33,7 +33,13 @@ export class HeaderComponent implements OnInit{
 
 
   login() {
-    this.oidcSecurityService.authorize();
+    try {
+      this.oidcSecurityService.authorize();
+    }
+    catch (e){
+      console.log(e)
+    }
+
   }
 
   logOff(){

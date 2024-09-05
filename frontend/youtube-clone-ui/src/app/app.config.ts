@@ -4,10 +4,11 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import {provideHttpClient} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, provideHttpClient} from "@angular/common/http";
 import { authConfig } from './auth/auth.config';
-import { provideAuth } from 'angular-auth-oidc-client';
+import {AuthInterceptor, provideAuth} from 'angular-auth-oidc-client';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideClientHydration(), provideAnimationsAsync(),provideHttpClient(), provideAuth(authConfig)]
+  providers: [provideRouter(routes), provideClientHydration(), provideAnimationsAsync(),provideHttpClient(), provideAuth(authConfig), {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi:true}],
+
 };

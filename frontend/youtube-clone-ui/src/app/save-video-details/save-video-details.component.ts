@@ -16,6 +16,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {NgIf} from "@angular/common";
 import {VideoPlayerComponent} from "../video-player/video-player.component";
 import {VideoDto} from "../video-dto";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {AuthInterceptor} from "angular-auth-oidc-client";
 
 @Component({
   selector: 'app-save-video-details',
@@ -34,9 +36,13 @@ import {VideoDto} from "../video-dto";
     MatChipInput,
     NgIf,
     VideoPlayerComponent
+    , HttpClientModule
   ],
   templateUrl: './save-video-details.component.html',
-  styleUrls: ['./save-video-details.component.css']  // Corrected property name to `styleUrls`
+  styleUrls: ['./save-video-details.component.css'],
+  providers:[
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi:true}
+  ],// Corrected property name to `styleUrls`
 })
 export class SaveVideoDetailsComponent {
 
